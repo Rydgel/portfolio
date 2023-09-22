@@ -19,6 +19,6 @@ serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 tokio-util = "0.7.9"
 tower = "0.4.13"
-tower-http = { version = "0.4.4", features = ["fs", "normalize-path", "trace"] }
+tower-http = { version = "0.4.4", features = ["compression-gzip", "fs", "normalize-path", "trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
