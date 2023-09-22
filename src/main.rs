@@ -1,7 +1,7 @@
 use axum::{routing::get, Router};
-use tower_http::services::ServeDir;
 use jeromem_dev::routes::health_check_handler;
 use jeromem_dev::telemetry::setup_tracing;
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
