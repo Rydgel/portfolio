@@ -1,12 +1,5 @@
-use serde::Serialize;
+use serde_json::{json, Value};
 
-#[derive(Serialize)]
-pub struct HealthPayload {
-    message: String,
-}
-
-pub async fn health_check_handler() -> axum::response::Json<HealthPayload> {
-    axum::Json(HealthPayload {
-        message: "ok".into(),
-    })
+pub async fn health_check_handler() -> axum::response::Json<Value> {
+    axum::Json(json!({ "message": "ok" }))
 }
