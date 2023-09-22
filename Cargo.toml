@@ -3,6 +3,13 @@ name = "jeromem_dev"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "jeromem_dev"
+
 [dependencies]
 askama = { version = "0.12.0", features = ["markdown", "with-axum"] }
 axum = "0.6"
