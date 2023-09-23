@@ -1,14 +1,15 @@
 use axum::body::StreamBody;
 use axum::response::IntoResponse;
 use axum::{routing::get, Router};
+use axum_extra::routing::RouterExt;
 use hyper::header;
-use jeromem_dev::routes::health_check_handler;
 use jeromem_dev::routes::not_found_handler;
+use jeromem_dev::routes::{health_check_handler, index_handler};
 use jeromem_dev::telemetry::setup_tracing;
 use tokio_util::io::ReaderStream;
 use tower::ServiceBuilder;
+use tower_http::compression::predicate::SizeAbove;
 use tower_http::compression::CompressionLayer;
-use tower_http::normalize_path::NormalizePathLayer;
 use tower_http::services::ServeDir;
 
 #[tokio::main]
@@ -23,12 +24,12 @@ async fn main() {
             "/favicon.ico",
             get(|| serve_from_static_folder("favicon.ico", "image/x-icon")),
         )
-        .route("/health", get(health_check_handler))
-        .layer(setup_tracing())
+        .route_with_tsr("/health", get(health_check_handler))
+        .route("/", get(index_handler))
         .layer(
             ServiceBuilder::new()
-                .layer(NormalizePathLayer::trim_trailing_slash())
-                .layer(CompressionLayer::new()),
+                .layer(setup_tracing())
+                .layer(CompressionLayer::new().compress_when(SizeAbove::new(0))),
         )
         .fallback(not_found_handler);
 
