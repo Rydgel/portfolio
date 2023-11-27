@@ -1,4 +1,4 @@
-use axum::body::StreamBody;
+use axum::body::Body;
 use axum::response::IntoResponse;
 use axum::{routing::get, Router};
 use axum_extra::routing::RouterExt;
@@ -34,10 +34,13 @@ async fn main() {
         .fallback(not_found_handler);
 
     let addr = "127.0.0.1:8080";
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .unwrap();
+
     tracing::info!("listening on {}", addr);
 
-    axum::Server::bind(&addr.parse().unwrap())
-        .serve(app.into_make_service())
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 }
@@ -50,7 +53,7 @@ async fn serve_from_static_folder(
         .await
         .unwrap();
     let stream = ReaderStream::new(file);
-    let body = StreamBody::new(stream);
+    let body = Body::from_stream(stream);
 
     let headers = [(header::CONTENT_TYPE, content_type)];
 
