@@ -34,9 +34,7 @@ async fn main() {
         .fallback(not_found_handler);
 
     let addr = "127.0.0.1:8080";
-    let listener = tokio::net::TcpListener::bind(addr)
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
     tracing::info!("listening on {}", addr);
 
