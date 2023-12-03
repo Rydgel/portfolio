@@ -15,14 +15,14 @@ use tower_http::services::ServeDir;
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .nest_service("/static", ServeDir::new("static"))
+        .nest_service("/assets", ServeDir::new("assets"))
         .route(
             "/robots.txt",
-            get(|| serve_from_static_folder("robots.txt", "text/plain")),
+            get(|| serve_from_assets_folder("robots.txt", "text/plain")),
         )
         .route(
             "/favicon.ico",
-            get(|| serve_from_static_folder("favicon.ico", "image/x-icon")),
+            get(|| serve_from_assets_folder("favicon.ico", "image/x-icon")),
         )
         .route_with_tsr("/health", get(health_check_handler))
         .route("/", get(index_handler))
@@ -43,11 +43,11 @@ async fn main() {
         .unwrap();
 }
 
-async fn serve_from_static_folder(
+async fn serve_from_assets_folder(
     file_name: &'static str,
     content_type: &'static str,
 ) -> impl IntoResponse {
-    let file = tokio::fs::File::open(format!("./static/{}", file_name))
+    let file = tokio::fs::File::open(format!("./assets/{}", file_name))
         .await
         .unwrap();
     let stream = ReaderStream::new(file);
